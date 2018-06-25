@@ -13,7 +13,10 @@ public class ValidadorPessoa {
     public static boolean validaNome(String nome) {
         return nome.contains(" ");
     }
-    public static boolean validaTelefone(String telefone) {
-        return (telefone.length() == 8);
+    public static boolean validaEmail(String email) {
+        return (email.contains("@"));
+    }
+    public static boolean validaDocumento(String documento) {
+        return (documento.length() == 11);
     }
 }

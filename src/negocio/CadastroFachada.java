@@ -1,18 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package negocio;
 
 import dados.CadastroDAOException;
 import dados.CadastroDAOJavaDb;
 import java.util.List;
 
-/**
- *
- * @author Julio
- */
 public class CadastroFachada {
     private CadastroDAO dao;
     
@@ -24,14 +15,17 @@ public class CadastroFachada {
         }
     }
     
-    public Pessoa adicionarPessoa(String nome, String telefone, boolean masculino) throws CadastroException{
+    public Pessoa adicionarPessoa(String nome, String email, String documento) throws CadastroException{
         if(!ValidadorPessoa.validaNome(nome)) {
             throw new CadastroException("Nome de pessoa inválido!");
         }
-        if(!ValidadorPessoa.validaTelefone(telefone)) {
-            throw new CadastroException("Número de telefone inválido!");
+        if(!ValidadorPessoa.validaEmail(email)) {
+            throw new CadastroException("Endereço de e-mail inválido!");
         }
-        Pessoa p = new Pessoa(nome, telefone, masculino);
+        if(!ValidadorPessoa.validaDocumento(documento)) {
+            throw new CadastroException("Número de documento inválido!");
+        }
+        Pessoa p = new Pessoa(nome, email, documento);
         try {
             boolean ok = dao.adicionar(p);
             if(ok) {
@@ -40,22 +34,6 @@ public class CadastroFachada {
             return null;
         } catch (CadastroDAOException e) {
             throw new CadastroException("Falha ao adicionar pessoa!", e);
-        }
-    }
-
-    public List<Pessoa> buscarHomens() throws CadastroException{
-        try {
-            return dao.getHomens();
-        } catch (CadastroDAOException e) {
-            throw new CadastroException("Falha ao buscar homens!", e);
-        }
-    }
-
-    public List<Pessoa> buscarMulheres() throws CadastroException{
-        try {
-            return dao.getMulheres();
-        } catch (CadastroDAOException e) {
-            throw new CadastroException("Falha ao buscar mulheres!", e);
         }
     }
 

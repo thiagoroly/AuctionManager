@@ -41,6 +41,19 @@ public class CadastroDAOJavaDb implements CadastroDAO{
         */
     }
     
+    private void deleteDB() throws CadastroDAOException {
+        try {
+            Connection con = DriverManager.getConnection("jdbc:derby:derbyDB;create=true");
+            Statement sta = con.createStatement();
+            String sql = "DROP TABLE Pessoas";
+            sta.executeUpdate(sql);
+            sta.close();
+            con.close();
+        } catch (SQLException ex) {
+            throw new CadastroDAOException(ex.getMessage());
+        }
+    }
+    
     private static void createDB() throws CadastroDAOException {
         try {
             Connection con = DriverManager.getConnection("jdbc:derby:derbyDB;create=true");
@@ -48,14 +61,31 @@ public class CadastroDAOJavaDb implements CadastroDAO{
             String sql = "CREATE TABLE Pessoas ("
                     + "ID INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                     + "NOME VARCHAR(100) NOT NULL,"
-                    + "TELEFONE CHAR(8) NOT NULL,"
-                    + "SEXO CHAR(1) NOT NULL"
+                    + "EMAIL CHAR(50) NOT NULL,"
+                    + "CPFCNPJ CHAR(11) NOT NULL"
                     + ")";
             sta.executeUpdate(sql);
             sta.close();
             con.close();
         } catch (SQLException ex) {
             throw new CadastroDAOException(ex.getMessage());
+        }
+    }
+    
+    private boolean adicionarPessoaTeste() throws CadastroDAOException {
+        try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "INSERT INTO PESSOAS (NOME, EMAIL, CPFCNPJ) VALUES (?,?,?)" //                             1        2         3            4          5             6
+                    );
+            stmt.setString(1, "Manolo");
+            stmt.setString(2, "manolo_lol@hotmail.com");
+            stmt.setString(3, "12212212288");
+            int ret = stmt.executeUpdate();
+            con.close();
+            return (ret>0);
+        } catch (SQLException ex) {
+            throw new CadastroDAOException("Falha ao adicionar.", ex);
         }
     }
     
@@ -69,11 +99,11 @@ public class CadastroDAOJavaDb implements CadastroDAO{
         try {
             Connection con = getConnection();
             PreparedStatement stmt = con.prepareStatement(
-                    "INSERT INTO PESSOAS (NOME, TELEFONE, SEXO) VALUES (?,?,?)" //                             1        2         3            4          5             6
+                    "INSERT INTO PESSOAS (NOME, EMAIL, CPFCNPJ) VALUES (?,?,?)" //                             1        2         3            4          5             6
                     );
             stmt.setString(1, p.getNome());
-            stmt.setString(2, p.getTelefone());
-            stmt.setString(3, Character.toString(p.getSexo()));
+            stmt.setString(2, p.getEmail());
+            stmt.setString(3, p.getDocumento());
             int ret = stmt.executeUpdate();
             con.close();
             return (ret>0);
@@ -94,9 +124,9 @@ public class CadastroDAOJavaDb implements CadastroDAO{
             Pessoa p = null;
             if(resultado.next()) {
                 String nome = resultado.getString("NOME");
-                String telefone = resultado.getString("TELEFONE");
-                String sexo = resultado.getString("SEXO");
-                p = new Pessoa(nome, telefone, sexo.equals("M"));
+                String email = resultado.getString("EMAIL");
+                String documento = resultado.getString("CPFCNPJ");
+                p = new Pessoa(nome, email, documento);
             }
             return p;
         } catch (SQLException ex) {
@@ -105,56 +135,20 @@ public class CadastroDAOJavaDb implements CadastroDAO{
     }
 
     @Override
-    public List<Pessoa> getHomens() throws CadastroDAOException {
-        try {
-            Connection con = getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet resultado = stmt.executeQuery("SELECT * FROM PESSOAS WHERE SEXO='M'");
-            List<Pessoa> lista = new ArrayList<Pessoa>();
-            while(resultado.next()) {
-                String nome = resultado.getString("NOME");
-                String telefone = resultado.getString("TELEFONE");
-                String sexo = resultado.getString("SEXO");
-                Pessoa p = new Pessoa(nome, telefone, sexo.equals("M"));
-                lista.add(p);
-            }
-            return lista;
-        } catch (SQLException ex) {
-            throw new CadastroDAOException("Falha ao buscar.", ex);
-        }
-    }
-
-    @Override
-    public List<Pessoa> getMulheres() throws CadastroDAOException {
-        try {
-            Connection con = getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet resultado = stmt.executeQuery("SELECT * FROM PESSOAS WHERE SEXO='F'");
-            List<Pessoa> lista = new ArrayList<Pessoa>();
-            while(resultado.next()) {
-                String nome = resultado.getString("NOME");
-                String telefone = resultado.getString("TELEFONE");
-                String sexo = resultado.getString("SEXO");
-                Pessoa p = new Pessoa(nome, telefone, sexo.equals("M"));
-                lista.add(p);
-            }
-            return lista;
-        } catch (SQLException ex) {
-            throw new CadastroDAOException("Falha ao buscar.", ex);
-        }    }
-
-    @Override
     public List<Pessoa> getTodos() throws CadastroDAOException {
+        //deleteDB();
+        //createDB();
+        //adicionarPessoaTeste();
         try {
             Connection con = getConnection();
             Statement stmt = con.createStatement();
             ResultSet resultado = stmt.executeQuery("SELECT * FROM PESSOAS ORDER BY NOME");
-            List<Pessoa> lista = new ArrayList<Pessoa>();
+            List<Pessoa> lista = new ArrayList<>();
             while(resultado.next()) {
                 String nome = resultado.getString("NOME");
-                String telefone = resultado.getString("TELEFONE");
-                String sexo = resultado.getString("SEXO");
-                Pessoa p = new Pessoa(nome, telefone, sexo.equals("M"));
+                String email = resultado.getString("EMAIL");
+                String documento = resultado.getString("CPFCNPJ");
+                Pessoa p = new Pessoa(nome, email, documento);
                 lista.add(p);
             }
             return lista;

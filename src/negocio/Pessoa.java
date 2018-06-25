@@ -3,33 +3,29 @@ package negocio;
 public class Pessoa {
 
     private String nome;
-    private String telefone;
-    private char sexo;
+    private String email;
+    private String documento;
 
-    public Pessoa(String umNome, String umTelefone, boolean masculino) {
-        nome = umNome;
-        telefone = umTelefone;
-        if (masculino) {
-            sexo = 'M';
-        } else {
-            sexo = 'F';
-        }
+    public Pessoa(String umNome, String umTelefone, String umDocumento) {
+        this.nome = umNome;
+        this.email = umTelefone;
+        this.documento = umDocumento;
     }
 
     public String getNome() {
-        return nome;
+        return this.nome;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public String getEmail() {
+        return this.email;
     }
     
-    public char getSexo() {
-        return sexo;
+    public String getDocumento() {
+        return this.documento;
     }
 
     @Override
     public String toString() {
-        return "[" + nome + "," + telefone + "," + sexo + "]";
+        return "[" + nome + "," + email + "," + documento + "]";
     }
 }

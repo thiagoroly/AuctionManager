@@ -7,21 +7,33 @@ package gui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
+import javax.swing.ComboBoxModel;
+import javax.swing.event.ListDataListener;
 
 /**
  *
  * @author Julio
  */
-public class ListaPessoasModel extends AbstractListModel<String> {
-    private List<String> nomes = new ArrayList<String>();
+public class ListaPessoasModel implements ComboBoxModel<String> {
+    private List<String> nomes;
+    private String nomeSelecionado;
+    private final static int FIRSTINDEX = 0;
     
     public ListaPessoasModel(){
         super();
+        nomes = new ArrayList<>();
     }
     
     public ListaPessoasModel(List<String> dados){
-        
+        this();
         nomes.addAll(dados);
+        if (getSize() > 0) { 
+            setSelectedItem(this.nomes.get(FIRSTINDEX));
+        }
+    }
+    
+    public void add(String nome){
+        nomes.add(nome);
     }
     
     @Override
@@ -34,12 +46,23 @@ public class ListaPessoasModel extends AbstractListModel<String> {
         return nomes.get(index);
     }
     
-    public void add(String s) {
-        nomes.add(s);
-        fireIntervalAdded(this, nomes.size(), nomes.size());
+    @Override
+    public void setSelectedItem(Object o) {
+        nomeSelecionado = (String)o;
     }
-    
-    public void removeAllElements() {
-        nomes.clear();
+
+    @Override
+    public Object getSelectedItem() {
+        return nomeSelecionado;
+    }
+
+    @Override
+    public void addListDataListener(ListDataListener ll) {
+        
+    }
+
+    @Override
+    public void removeListDataListener(ListDataListener ll) {
+        
     }
 }
