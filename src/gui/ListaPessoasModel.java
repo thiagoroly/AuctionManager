@@ -1,59 +1,56 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataListener;
+import negocio.Pessoa;
 
-/**
- *
- * @author Julio
- */
 public class ListaPessoasModel implements ComboBoxModel<String> {
-    private List<String> nomes;
-    private String nomeSelecionado;
+    private List<Pessoa> pessoas;
+    private String documentoSelecionado;
     private final static int FIRSTINDEX = 0;
     
     public ListaPessoasModel(){
         super();
-        nomes = new ArrayList<>();
+        pessoas = new ArrayList<>();
     }
     
-    public ListaPessoasModel(List<String> dados){
+    public ListaPessoasModel(List<Pessoa> dados){
         this();
-        nomes.addAll(dados);
+        pessoas.addAll(dados);
         if (getSize() > 0) { 
-            setSelectedItem(this.nomes.get(FIRSTINDEX));
+            setSelectedItem(this.pessoas.get(FIRSTINDEX));
         }
     }
     
-    public void add(String nome){
-        nomes.add(nome);
+    public void add(Pessoa pessoa){
+        pessoas.add(pessoa);
     }
     
     @Override
     public int getSize() {
-        return nomes.size();
+        return pessoas.size();
     }
 
     @Override
     public String getElementAt(int index) {
-        return nomes.get(index);
+        return pessoas.get(index).getDocumento();
     }
     
     @Override
     public void setSelectedItem(Object o) {
-        nomeSelecionado = (String)o;
+        if(o instanceof Pessoa){
+            documentoSelecionado = ((Pessoa)o).getDocumento();
+        }
+        else {
+            documentoSelecionado = (String)o;
+        }
     }
 
     @Override
     public Object getSelectedItem() {
-        return nomeSelecionado;
+        return documentoSelecionado;
     }
 
     @Override

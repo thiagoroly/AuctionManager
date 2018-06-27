@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import negocio.CadastroException;
+import negocio.GerenciadorException;
 
 /**
  *
@@ -24,8 +24,8 @@ public class JanelaInicial extends javax.swing.JFrame {
     /**
      * Creates new form JanelaInicial
      */
-    public JanelaInicial() throws CadastroException {
-        controlador = new CadastroControlador();
+    public JanelaInicial() throws GerenciadorException {
+        controlador = new GerenciadorControlador();
         initComponents();
     }
 
@@ -171,10 +171,10 @@ public class JanelaInicial extends javax.swing.JFrame {
         if ((result == JOptionPane.OK_OPTION)) {
             if(!tfNome.getText().equals("") && !tfEmail.getText().equals("") && !tfDocumento.getText().equals("")){
                 try {
-                    if (controlador.adicionarPessoa(tfNome.getText(), tfNome.getText(), tfEmail.getText())) {
+                    if (controlador.adicionarPessoa(tfNome.getText(), tfEmail.getText(), tfDocumento.getText())) {
                         JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso.");
                     }
-                } catch (CadastroException ex) {
+                } catch (GerenciadorException ex) {
                     Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -185,7 +185,15 @@ public class JanelaInicial extends javax.swing.JFrame {
     }//GEN-LAST:event_btNewUserActionPerformed
 
     private void btUserDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUserDetailActionPerformed
-        JOptionPane.showMessageDialog(this, cbUser.getSelectedItem());
+        try {
+            JOptionPane.showMessageDialog(this, "Nome: " 
+                    + controlador.getNome(cbUser.getSelectedItem().toString()) + "\r\nE-mail: "
+                    + controlador.getEmail(cbUser.getSelectedItem().toString()) + "\r\nDocumento: "
+                    + cbUser.getSelectedItem()
+            );
+        } catch (GerenciadorException ex) {
+            Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btUserDetailActionPerformed
 
     /**
@@ -220,7 +228,7 @@ public class JanelaInicial extends javax.swing.JFrame {
             public void run() {
                 try {
                     new JanelaInicial().setVisible(true);
-                } catch (CadastroException ex) {
+                } catch (GerenciadorException ex) {
                     Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -240,5 +248,5 @@ public class JanelaInicial extends javax.swing.JFrame {
     private javax.swing.JLabel lbAuction;
     private javax.swing.JLabel lbUser;
     // End of variables declaration//GEN-END:variables
-    private CadastroControlador controlador;
+    private GerenciadorControlador controlador;
 }

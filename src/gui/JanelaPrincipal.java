@@ -14,7 +14,7 @@ import java.awt.HeadlessException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import negocio.CadastroException;
+import negocio.GerenciadorException;
 
 /**
  *
@@ -25,8 +25,8 @@ public class JanelaPrincipal extends javax.swing.JFrame {
     /**
      * Creates new form JanelaPrincipal
      */
-    public JanelaPrincipal() throws CadastroException {
-        controlador = new CadastroControlador();
+    public JanelaPrincipal() throws GerenciadorException {
+        controlador = new GerenciadorControlador();
         initComponents();
     }
 
@@ -212,8 +212,8 @@ public class JanelaPrincipal extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
             String nome = txtNome.getText();
-            JOptionPane.showMessageDialog(this, "Telefone: " + controlador.getTelefone(nome));
-        } catch (CadastroException | HeadlessException e) {
+            JOptionPane.showMessageDialog(this, "Telefone: " + controlador.getEmail(nome));
+        } catch (GerenciadorException | HeadlessException e) {
             JOptionPane.showMessageDialog(this, "Não foi possível buscar a pessoa no cadasatro. " + e.getMessage());
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
@@ -221,20 +221,20 @@ public class JanelaPrincipal extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-
-            public void run() {
-                try {
-                    new JanelaPrincipal().setVisible(true);
-                } catch (CadastroException ex) {
-                    System.out.println("Erro fatal: " + ex.getMessage());
-                    System.out.println(ex.toString());
-                    System.exit(0);
-                }
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//
+//            public void run() {
+//                try {
+//                    new JanelaPrincipal().setVisible(true);
+//                } catch (CadastroException ex) {
+//                    System.out.println("Erro fatal: " + ex.getMessage());
+//                    System.out.println(ex.toString());
+//                    System.exit(0);
+//                }
+//            }
+//        });
+//    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuBar barraMenu;
     private javax.swing.JButton btAdicionar;
@@ -253,5 +253,5 @@ public class JanelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtTelefone;
     // End of variables declaration//GEN-END:variables
-    private CadastroControlador controlador;
+    private GerenciadorControlador controlador;
 }
