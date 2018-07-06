@@ -68,6 +68,11 @@ public class JanelaInicial extends javax.swing.JFrame {
         });
 
         btCheckAuction.setText("Verificar Lances");
+        btCheckAuction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btCheckAuctionActionPerformed(evt);
+            }
+        });
 
         btBidAuction.setText("Novo Lance");
 
@@ -189,10 +194,9 @@ public class JanelaInicial extends javax.swing.JFrame {
 
     private void btUserDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUserDetailActionPerformed
         try {
-            JOptionPane.showMessageDialog(this, "Nome: " 
-                    + controlador.getUsuarioNome(cbUser.getSelectedItem().toString()) + "\r\nE-mail: "
-                    + controlador.getUsuarioEmail(cbUser.getSelectedItem().toString()) + "\r\nDocumento: "
-                    + cbUser.getSelectedItem()
+            JOptionPane.showMessageDialog(this, "Nome: " + controlador.getUsuarioNome(cbUser.getSelectedItem().toString()) + "\r\n" +
+                    "CPF/CNPJ: " + cbUser.getSelectedItem().toString() + "\r\n" +
+                    "E-mail: " + controlador.getUsuarioEmail(cbUser.getSelectedItem().toString())
             );
         } catch (GerenciadorException ex) {
             Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
@@ -201,20 +205,27 @@ public class JanelaInicial extends javax.swing.JFrame {
 
     private void btAuctionDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAuctionDetailActionPerformed
         try {
-            JOptionPane.showMessageDialog(this, "Título: "
-                    + controlador.getLeilaoTitulo(cbAuction.getSelectedItem().toString())
-                    
-                    //+ cbAuction.getSelectedItem()
-                    
-                    //+ "\r\nCategoria: "
-                    
-                    //+ controlador.getUsuarioNome(cbAuction.getSelectedItem().toString()) + "\r\nE-mail: "
-                    //+ controlador.getUsuarioEmail(cbAuction.getSelectedItem().toString()) + "\r\nDocumento: "
+            JOptionPane.showMessageDialog(this, "Nome: " + cbAuction.getSelectedItem().toString() + "\r\n" +
+                    "Categoria: " + controlador.getLeilaoCategoria(cbAuction.getSelectedItem().toString()) + "\r\n" +
+                    "Dono: " + controlador.getLeilaoDono(cbAuction.getSelectedItem().toString()) + "\r\n" +
+                    "Lance mínimo: " + controlador.getLeilaoLanceMin(cbAuction.getSelectedItem().toString()) + "\r\n" +
+                    "Status: " + controlador.getLeilaoStatus(cbAuction.getSelectedItem().toString())
             );
         } catch (GerenciadorException ex) {
             Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btAuctionDetailActionPerformed
+
+    private void btCheckAuctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCheckAuctionActionPerformed
+        javax.swing.JList lstPessoas = new javax.swing.JList();
+        lstPessoas.setModel(controlador.getListaLancesModel(cbAuction.getSelectedItem().toString()));
+        
+        javax.swing.JScrollPane painelListagem = new javax.swing.JScrollPane();
+        painelListagem.setViewportView(lstPessoas);
+        
+        Object message = painelListagem;
+        JOptionPane.showConfirmDialog(null, message, "Lances dados em " + cbAuction.getSelectedItem().toString(), JOptionPane.YES_NO_OPTION);
+    }//GEN-LAST:event_btCheckAuctionActionPerformed
 
     /**
      * @param args the command line arguments

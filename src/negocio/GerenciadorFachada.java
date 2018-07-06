@@ -68,10 +68,42 @@ public class GerenciadorFachada {
             throw new GerenciadorException("Falha ao buscar leilões!", e);
         }
     }
-
-    public String buscarLeilaoTitulo(String leilaoId) throws GerenciadorException{
+    
+    public List<String> buscarTodosLeiloesTitulo() throws GerenciadorException{
         try {
-            return dao.getLeilaoTitulo(leilaoId);
+            return dao.getTodosLeiloesTitulo();
+        } catch (GerenciadorDAOException e) {
+            throw new GerenciadorException("Falha ao buscar leilões!", e);
+        }
+    }
+
+    public String buscarLeilaoCategoria(String leilao) throws GerenciadorException{
+        try {
+            return dao.getLeilaoCategoria(leilao);
+        } catch (GerenciadorDAOException e) {
+            throw new GerenciadorException("Falha ao buscar leilões!", e);
+        }
+    }
+
+    public String buscarLeilaoDono(String leilao) throws GerenciadorException{
+        try {
+            return dao.getLeilaoDono(leilao);
+        } catch (GerenciadorDAOException e) {
+            throw new GerenciadorException("Falha ao buscar leilões!", e);
+        }
+    }
+
+    public String buscarLeilaoLanceMin(String leilao) throws GerenciadorException{
+        try {
+            return dao.getLeilaoLanceMin(leilao);
+        } catch (GerenciadorDAOException e) {
+            throw new GerenciadorException("Falha ao buscar leilões!", e);
+        }
+    }
+
+    public String buscarLeilaoStatus(String leilao) throws GerenciadorException{
+        try {
+            return dao.getLeilaoStatus(leilao);
         } catch (GerenciadorDAOException e) {
             throw new GerenciadorException("Falha ao buscar leilões!", e);
         }

@@ -3,6 +3,7 @@ package gui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ComboBoxModel;
+import javax.swing.ListModel;
 import negocio.*;
 
 public class GerenciadorControlador {
@@ -10,7 +11,6 @@ public class GerenciadorControlador {
     private ListaPessoasModel modelPessoasSaidaTexto;
     private ListaLeiloesModel modelLeiloesSaidaTexto;
     
-
     public GerenciadorControlador() throws GerenciadorException {
         fachada = new GerenciadorFachada();
         atualizaUsuarios();
@@ -51,7 +51,7 @@ public class GerenciadorControlador {
     }
     
     public void atualizaLeiloes() throws GerenciadorException {
-        modelLeiloesSaidaTexto = new ListaLeiloesModel(fachada.buscarTodosLeiloes());
+        modelLeiloesSaidaTexto = new ListaLeiloesModel(fachada.buscarTodosLeiloesTitulo());
     }
     
     public String getUsuarioEmail(String documento) throws GerenciadorException {
@@ -71,7 +71,23 @@ public class GerenciadorControlador {
         return retorno;
     }
     
-    public String getLeilaoTitulo(String leilaoId) throws GerenciadorException{
-        return fachada.buscarLeilaoTitulo(leilaoId);
+    public String getLeilaoCategoria(String leilao) throws GerenciadorException{
+        return fachada.buscarLeilaoCategoria(leilao);
+    }
+
+    public String getLeilaoDono(String leilao) throws GerenciadorException{
+        return fachada.buscarLeilaoDono(leilao);
+    }
+
+    public String getLeilaoLanceMin(String leilao) throws GerenciadorException{
+        return fachada.buscarLeilaoLanceMin(leilao);
+    }
+
+    public String getLeilaoStatus(String leilao) throws GerenciadorException{
+        return fachada.buscarLeilaoStatus(leilao);
+    }
+
+    public ListModel getListaLancesModel(String leilao) {
+        return new ListaLancesModel(fachada.buscarTodosLeilaoLances(leilao));
     }
 }

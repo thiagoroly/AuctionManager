@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package dados;
 
 import java.util.List;
@@ -13,10 +9,6 @@ import negocio.GerenciadorDAO;
 import negocio.Lance;
 import negocio.Leilao;
 
-/**
- *
- * @author Júlio
- */
 public class GerenciadorDAOJavaDb implements GerenciadorDAO{
     private static GerenciadorDAOJavaDb ref;
     
@@ -172,6 +164,24 @@ public class GerenciadorDAOJavaDb implements GerenciadorDAO{
         }
     }
     
+    private boolean removerBemTeste() throws GerenciadorDAOException {
+        try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "DELETE FROM Leiloes WHERE ID = (?)" 
+                    
+                    );
+            stmt.setString(1, "2");
+
+
+            int ret = stmt.executeUpdate();
+            con.close();
+            return (ret>0);
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao adicionar.", ex);
+        }
+    }
+    
     private boolean adicionarLanceTeste() throws GerenciadorDAOException {
         try {
             Connection con = getConnection();
@@ -244,6 +254,7 @@ public class GerenciadorDAOJavaDb implements GerenciadorDAO{
         //deleteDB();
         //createDB();
         //adicionarPessoaTeste();
+        //removerBemTeste();
         try {
             Connection con = getConnection();
             Statement stmt = con.createStatement();
@@ -355,19 +366,95 @@ public class GerenciadorDAOJavaDb implements GerenciadorDAO{
     }
 
     @Override
-    public String getLeilaoTitulo(String id) throws GerenciadorDAOException {
+    public List<String> getTodosLeiloesTitulo() throws GerenciadorDAOException {
+        try {
+            Connection con = getConnection();
+            Statement stmt = con.createStatement();
+
+            ArrayList<String> lista = new ArrayList<>();
+
+            ResultSet resultadoLeilao = stmt.executeQuery("SELECT * FROM LEILOES");
+            while (resultadoLeilao.next()) {
+                String nome = resultadoLeilao.getString("NOME");
+                lista.add(nome);
+            }
+            return lista;
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao buscar.", ex);
+        }
+    }
+
+    @Override
+    public String getLeilaoCategoria(String leilao) throws GerenciadorDAOException {
         try {
             Connection con = getConnection();
             PreparedStatement stmt = con.prepareStatement(
-                    "SELECT * FROM LEILOES WHERE ID=?"
+                    "SELECT * FROM LEILOES WHERE NOME = ?"
                     );
-            stmt.setString(1, id);
+            stmt.setString(1, leilao);
             ResultSet resultado = stmt.executeQuery();
-            String titulo = "";
+            String categoria = "";
             if(resultado.next()) {
-                titulo = resultado.getString("NOME");
+                categoria = resultado.getString("CATEGORIA");
             }
-            return titulo;
+            return categoria;
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao buscar.", ex);
+        }
+    }
+
+    @Override
+    public String getLeilaoDono(String leilao) throws GerenciadorDAOException {
+                try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT * FROM LEILOES WHERE NOME = ?"
+                    );
+            stmt.setString(1, leilao);
+            ResultSet resultado = stmt.executeQuery();
+            String dono = "";
+            if(resultado.next()) {
+                dono = resultado.getString("DONO");
+            }
+            return dono;
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao buscar.", ex);
+        }
+    }
+
+    @Override
+    public String getLeilaoLanceMin(String leilao) throws GerenciadorDAOException {
+        try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT * FROM LEILOES WHERE NOME = ?"
+                    );
+            stmt.setString(1, leilao);
+            ResultSet resultado = stmt.executeQuery();
+            String lanceMin = "";
+            if(resultado.next()) {
+                lanceMin = resultado.getString("LANCEMIN");
+            }
+            return lanceMin;
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao buscar.", ex);
+        }
+    }
+
+    @Override
+    public String getLeilaoStatus(String leilao) throws GerenciadorDAOException {
+                try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT * FROM LEILOES WHERE NOME = ?"
+                    );
+            stmt.setString(1, leilao);
+            ResultSet resultado = stmt.executeQuery();
+            String status = "";
+            if(resultado.next()) {
+                status = resultado.getString("STATUS");
+            }
+            return status;
         } catch (SQLException ex) {
             throw new GerenciadorDAOException("Falha ao buscar.", ex);
         }

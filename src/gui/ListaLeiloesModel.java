@@ -8,7 +8,6 @@ import negocio.Leilao;
 
 public class ListaLeiloesModel  implements ComboBoxModel<String> {
     private List<String> leiloes;
-    private List<String> leiloesId;
     
     private String leilaoSelecionado;
     private final static int FIRSTINDEX = 0;
