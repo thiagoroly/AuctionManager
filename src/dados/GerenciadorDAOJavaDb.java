@@ -8,7 +8,9 @@ import java.util.List;
 import negocio.Pessoa;
 import java.sql.*;
 import java.util.ArrayList;
+import negocio.Bem;
 import negocio.GerenciadorDAO;
+import negocio.Lance;
 import negocio.Leilao;
 
 /**
@@ -88,8 +90,9 @@ public class GerenciadorDAOJavaDb implements GerenciadorDAO{
                     + "ID INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                     + "LEILAO INTEGER NOT NULL,"
                     + "VALOR DECIMAL(12,2) NOT NULL,"
-                    + "USUARIO VARCHAR(500) NOT NULL,"
-                    + "CONSTRAINT LANCES_FK FOREIGN KEY (LEILAO) REFERENCES Leiloes (ID)"
+                    + "USUARIO CHAR(11) NOT NULL,"
+                    + "CONSTRAINT LANCES_LEILAO_FK FOREIGN KEY (LEILAO) REFERENCES Leiloes (ID)"
+                    + "CONSTRAINT LANCES_PESSOAS_FK FOREIGN KEY (USUARIO) REFERENCES Pessoas (CPFCNPJ)"
                     + ")";
             
             String query4 = "CREATE TABLE Bens ("
@@ -116,11 +119,68 @@ public class GerenciadorDAOJavaDb implements GerenciadorDAO{
         try {
             Connection con = getConnection();
             PreparedStatement stmt = con.prepareStatement(
-                    "INSERT INTO PESSOAS (CPFCNPJ, NOME, EMAIL) VALUES (?,?,?)" //                             1        2         3            4          5             6
+                    "INSERT INTO PESSOAS (CPFCNPJ, NOME, EMAIL) VALUES (?,?,?)" 
                     );
             stmt.setString(1, "12212212288");
             stmt.setString(2, "Manolo Manolense");
             stmt.setString(3, "manolo_lol@hotmail.com");
+
+            int ret = stmt.executeUpdate();
+            con.close();
+            return (ret>0);
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao adicionar.", ex);
+        }
+    }
+    
+    private boolean adicionarLeilaoTeste() throws GerenciadorDAOException {
+        try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "INSERT INTO Leiloes (NOME, CATEGORIA, DONO, LANCEMIN, STATUS) VALUES (?,?,?,?,?)" 
+                    );
+            stmt.setString(1, "Leilão de Bicicletas");
+            stmt.setString(2, "Esportivo");
+            stmt.setString(3, "12212212288");
+            stmt.setString(4, "1000");
+            stmt.setString(5, "criado");
+
+            int ret = stmt.executeUpdate();
+            con.close();
+            return (ret>0);
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao adicionar.", ex);
+        }
+    }
+    
+    private boolean adicionarBemTeste() throws GerenciadorDAOException {
+        try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "INSERT INTO Bens (LEILAO, NOME, DESCB, DESCD) VALUES (?,?,?,?)" 
+                    );
+            stmt.setString(1, "1");
+            stmt.setString(2, "calor cross");
+            stmt.setString(3, "Croizinha cromada");
+            stmt.setString(4, "Duas rodas, dois pedais, muito estilosa");
+
+            int ret = stmt.executeUpdate();
+            con.close();
+            return (ret>0);
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao adicionar.", ex);
+        }
+    }
+    
+    private boolean adicionarLanceTeste() throws GerenciadorDAOException {
+        try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "INSERT INTO Lances (LEILAO, VALOR, USUARIO) VALUES (?,?,?)" 
+                    );
+            stmt.setString(1, "1");
+            stmt.setString(2, "1200");
+            stmt.setString(3, "12212212288");
 
             int ret = stmt.executeUpdate();
             con.close();
@@ -140,7 +200,7 @@ public class GerenciadorDAOJavaDb implements GerenciadorDAO{
         try {
             Connection con = getConnection();
             PreparedStatement stmt = con.prepareStatement(
-                    "INSERT INTO PESSOAS (CPFCNPJ, NOME, EMAIL) VALUES (?,?,?)" //                             1        2         3            4          5             6
+                    "INSERT INTO PESSOAS (CPFCNPJ, NOME, EMAIL) VALUES (?,?,?)" 
                     );
             stmt.setString(1, p.getDocumento());
             stmt.setString(2, p.getNome());
@@ -178,6 +238,9 @@ public class GerenciadorDAOJavaDb implements GerenciadorDAO{
 
     @Override
     public List<Pessoa> getTodos() throws GerenciadorDAOException {
+        //adicionarLeilaoTeste();
+        //adicionarBemTeste();
+        //adicionarLanceTeste();
         //deleteDB();
         //createDB();
         //adicionarPessoaTeste();
@@ -221,7 +284,92 @@ public class GerenciadorDAOJavaDb implements GerenciadorDAO{
         }
     }
     
-    public List<Leilao> getTodosLeiloes(){
-        
+    private ArrayList<Leilao> getLeiloes() throws SQLException {
+        Connection con = getConnection();
+        Statement stmt = con.createStatement();
+
+        ArrayList<Leilao> lista = new ArrayList<>();
+
+        ResultSet resultadoLeilao = stmt.executeQuery("SELECT * FROM LEILOES");
+        while (resultadoLeilao.next()) {
+            String leilaoID = resultadoLeilao.getString("ID");
+            String nome = resultadoLeilao.getString("NOME");
+            String categoria = resultadoLeilao.getString("CATEGORIA");
+            String dono = resultadoLeilao.getString("DONO");
+            Double lanceMin = Double.parseDouble(resultadoLeilao.getString("LANCEMIN"));
+            String status = resultadoLeilao.getString("STATUS");
+
+            Leilao l = new Leilao(leilaoID, nome, categoria, dono, lanceMin, status);
+            lista.add(l);
+        }
+        return lista;
+    }
+    
+    private ArrayList<Bem> getBens(String leilaoID) throws SQLException {
+        Connection con = getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Bem> lote = new ArrayList<>();
+        ResultSet resultadoBem = stmt.executeQuery("SELECT * FROM BENS WHERE LEILAO = " + leilaoID);
+        while (resultadoBem.next()) {
+            String bemId = resultadoBem.getString("ID");
+            String bemNome = resultadoBem.getString("NOME");
+            String bemDescriBreve = resultadoBem.getString("DESCB");
+            String bemDescriDetalh = resultadoBem.getString("DESCD");
+
+            Bem b = new Bem(bemId, bemNome, bemDescriBreve, bemDescriDetalh);
+            lote.add(b);
+        }
+        return lote;
+    }
+    
+    private ArrayList<Lance> getLances(String leilaoID) throws SQLException {
+        Connection con = getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Lance> lances = new ArrayList<>();
+        ResultSet resultadoLance = stmt.executeQuery("SELECT * FROM LANCES WHERE LEILAO = " + leilaoID);
+        while(resultadoLance.next()) {
+            String lanceId = resultadoLance.getString("ID");
+            Double lanceValor = Double.parseDouble(resultadoLance.getString("VALOR"));
+            String lanceUsuario = resultadoLance.getString("USUARIO");
+
+            Lance lance = new Lance(lanceId, lanceValor, lanceUsuario);
+            lances.add(lance);
+        }
+        return lances;
+    }
+
+    @Override
+    public List<Leilao> getTodosLeiloes() throws GerenciadorDAOException {
+        try {
+            List<Leilao> listaLeilao = getLeiloes();
+            List<Bem> listaBens;
+            for (Leilao l : listaLeilao) {
+                l.setLote(getBens(l.getId()));
+                l.setLances(getLances(l.getId()));
+            }
+
+            return listaLeilao;
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao buscar.", ex);
+        }
+    }
+
+    @Override
+    public String getLeilaoTitulo(String id) throws GerenciadorDAOException {
+        try {
+            Connection con = getConnection();
+            PreparedStatement stmt = con.prepareStatement(
+                    "SELECT * FROM LEILOES WHERE ID=?"
+                    );
+            stmt.setString(1, id);
+            ResultSet resultado = stmt.executeQuery();
+            String titulo = "";
+            if(resultado.next()) {
+                titulo = resultado.getString("NOME");
+            }
+            return titulo;
+        } catch (SQLException ex) {
+            throw new GerenciadorDAOException("Falha ao buscar.", ex);
+        }
     }
 }

@@ -61,6 +61,11 @@ public class JanelaInicial extends javax.swing.JFrame {
         });
 
         btAuctionDetail.setText("Detalhes");
+        btAuctionDetail.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAuctionDetailActionPerformed(evt);
+            }
+        });
 
         btCheckAuction.setText("Verificar Lances");
 
@@ -79,7 +84,7 @@ public class JanelaInicial extends javax.swing.JFrame {
 
         cbUser.setModel(controlador.getListaPessoasModel());
 
-        cbAuction.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbAuction.setModel(controlador.getListaLeiloesModel());
 
         lbUser.setText("Usuário Logado:");
 
@@ -146,8 +151,6 @@ public class JanelaInicial extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        getAccessibleContext().setAccessibleName("Gerenciador de Leilões");
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -171,7 +174,7 @@ public class JanelaInicial extends javax.swing.JFrame {
         if ((result == JOptionPane.OK_OPTION)) {
             if(!tfNome.getText().equals("") && !tfEmail.getText().equals("") && !tfDocumento.getText().equals("")){
                 try {
-                    if (controlador.adicionarPessoa(tfNome.getText(), tfEmail.getText(), tfDocumento.getText())) {
+                    if (controlador.adicionaUsuario(tfNome.getText(), tfEmail.getText(), tfDocumento.getText())) {
                         JOptionPane.showMessageDialog(this, "Cadastro realizado com sucesso.");
                     }
                 } catch (GerenciadorException ex) {
@@ -187,14 +190,31 @@ public class JanelaInicial extends javax.swing.JFrame {
     private void btUserDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUserDetailActionPerformed
         try {
             JOptionPane.showMessageDialog(this, "Nome: " 
-                    + controlador.getNome(cbUser.getSelectedItem().toString()) + "\r\nE-mail: "
-                    + controlador.getEmail(cbUser.getSelectedItem().toString()) + "\r\nDocumento: "
+                    + controlador.getUsuarioNome(cbUser.getSelectedItem().toString()) + "\r\nE-mail: "
+                    + controlador.getUsuarioEmail(cbUser.getSelectedItem().toString()) + "\r\nDocumento: "
                     + cbUser.getSelectedItem()
             );
         } catch (GerenciadorException ex) {
             Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btUserDetailActionPerformed
+
+    private void btAuctionDetailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAuctionDetailActionPerformed
+        try {
+            JOptionPane.showMessageDialog(this, "Título: "
+                    + controlador.getLeilaoTitulo(cbAuction.getSelectedItem().toString())
+                    
+                    //+ cbAuction.getSelectedItem()
+                    
+                    //+ "\r\nCategoria: "
+                    
+                    //+ controlador.getUsuarioNome(cbAuction.getSelectedItem().toString()) + "\r\nE-mail: "
+                    //+ controlador.getUsuarioEmail(cbAuction.getSelectedItem().toString()) + "\r\nDocumento: "
+            );
+        } catch (GerenciadorException ex) {
+            Logger.getLogger(JanelaInicial.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btAuctionDetailActionPerformed
 
     /**
      * @param args the command line arguments

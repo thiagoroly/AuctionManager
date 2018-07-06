@@ -1,15 +1,19 @@
 package negocio;
 
+import java.util.ArrayList;
+
 public class Leilao {
+    private String id;
     private String titulo;
     private String categoria;
-    private Object lote;
-    private Pessoa dono;
+    private ArrayList<Bem> lote;
+    private String dono;
     private Double precoMin;
     private String status;
-    private Object lances;
+    private ArrayList<Lance> lances;
 
-    public Leilao(String titulo, String categoria, Object lote, Pessoa dono, Double precoMin, String status, Object lances) {
+    public Leilao(String id, String titulo, String categoria, ArrayList<Bem> lote, String dono, Double precoMin, String status, ArrayList<Lance> lances) {
+        this.id = id;
         this.titulo = titulo;
         this.categoria = categoria;
         this.lote = lote;
@@ -18,7 +22,28 @@ public class Leilao {
         this.status = status;
         this.lances = lances;
     }
+    
+    public Leilao(String id, String titulo, String categoria, String dono, Double precoMin, String status) {
+        this.id = id;
+        this.titulo = titulo;
+        this.categoria = categoria;
+        this.dono = dono;
+        this.precoMin = precoMin;
+        this.status = status;
+    }
 
+    public void setLote(ArrayList<Bem> lote) {
+        this.lote = lote;
+    }
+
+    public void setLances(ArrayList<Lance> lances) {
+        this.lances = lances;
+    }
+    
+    public String getId() {
+        return id;
+    }
+    
     public String getTitulo() {
         return titulo;
     }
@@ -27,11 +52,11 @@ public class Leilao {
         return categoria;
     }
 
-    public Object getLote() {
+    public ArrayList<Bem> getLote() {
         return lote;
     }
 
-    public Pessoa getDono() {
+    public String getDono() {
         return dono;
     }
 
@@ -43,9 +68,7 @@ public class Leilao {
         return status;
     }
 
-    public Object getLances() {
+    public ArrayList<Lance> getLances() {
         return lances;
     }
-    
-    
 }

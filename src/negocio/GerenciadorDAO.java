@@ -8,4 +8,7 @@ public interface GerenciadorDAO {
     Pessoa getPessoaPorNome(String n) throws GerenciadorDAOException;
     Pessoa getPessoaPorDocumento(String n) throws GerenciadorDAOException;
     List<Pessoa> getTodos() throws GerenciadorDAOException;
+    List<Leilao> getTodosLeiloes() throws GerenciadorDAOException;
+    String getLeilaoTitulo(String leilaoId) throws GerenciadorDAOException;
+    
 }

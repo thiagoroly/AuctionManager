@@ -212,7 +212,7 @@ public class JanelaPrincipal extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
             String nome = txtNome.getText();
-            JOptionPane.showMessageDialog(this, "Telefone: " + controlador.getEmail(nome));
+            JOptionPane.showMessageDialog(this, "Telefone: " + controlador.getUsuarioEmail(nome));
         } catch (GerenciadorException | HeadlessException e) {
             JOptionPane.showMessageDialog(this, "Não foi possível buscar a pessoa no cadasatro. " + e.getMessage());
         }

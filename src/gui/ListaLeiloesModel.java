@@ -6,27 +6,29 @@ import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataListener;
 import negocio.Leilao;
 
-public class ListaLeilaoModel  implements ComboBoxModel<String> {
-    private List<Leilao> leiloes;
+public class ListaLeiloesModel  implements ComboBoxModel<String> {
+    private List<String> leiloes;
+    private List<String> leiloesId;
+    
     private String leilaoSelecionado;
     private final static int FIRSTINDEX = 0;
 
     @Override
     public void setSelectedItem(Object o) {
         if(o instanceof Leilao){
-            leilaoSelecionado = ((Leilao)o).getTitulo();
+            leilaoSelecionado = ((Leilao)o).getId();
         }
         else {
             leilaoSelecionado = (String)o;
         }
     }
     
-    public ListaLeilaoModel(){
+    public ListaLeiloesModel(){
         super();
         leiloes = new ArrayList<>();
     }
     
-    public ListaLeilaoModel(List<Leilao> dados){
+    public ListaLeiloesModel(List<String> dados){
         this();
         leiloes.addAll(dados);
         if (getSize() > 0) { 
@@ -34,8 +36,8 @@ public class ListaLeilaoModel  implements ComboBoxModel<String> {
         }
     }
     
-    public void add(Leilao pessoa){
-        leiloes.add(pessoa);
+    public void add(String leilao){
+        leiloes.add(leilao);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class ListaLeilaoModel  implements ComboBoxModel<String> {
 
     @Override
     public String getElementAt(int index) {
-        return leiloes.get(index).getTitulo();
+        return leiloes.get(index);
     }
 
     @Override

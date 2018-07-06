@@ -68,5 +68,13 @@ public class GerenciadorFachada {
             throw new GerenciadorException("Falha ao buscar leilões!", e);
         }
     }
+
+    public String buscarLeilaoTitulo(String leilaoId) throws GerenciadorException{
+        try {
+            return dao.getLeilaoTitulo(leilaoId);
+        } catch (GerenciadorDAOException e) {
+            throw new GerenciadorException("Falha ao buscar leilões!", e);
+        }
+    }
     
 }

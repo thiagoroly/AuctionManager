@@ -7,15 +7,22 @@ import negocio.*;
 
 public class GerenciadorControlador {
     private GerenciadorFachada fachada;
-    private ListaPessoasModel modelSaidaTexto;
+    private ListaPessoasModel modelPessoasSaidaTexto;
+    private ListaLeiloesModel modelLeiloesSaidaTexto;
+    
 
     public GerenciadorControlador() throws GerenciadorException {
         fachada = new GerenciadorFachada();
-        atualiza();
+        atualizaUsuarios();
+        atualizaLeiloes();
     }
 
     public ComboBoxModel<String> getListaPessoasModel(){
-        return modelSaidaTexto;
+        return modelPessoasSaidaTexto;
+    }
+    
+    public ComboBoxModel<String> getListaLeiloesModel(){
+        return modelLeiloesSaidaTexto;
     }
     
     private List<String> toListString(List<Pessoa> listaOrigem) {
@@ -26,37 +33,45 @@ public class GerenciadorControlador {
         return listaDestino;
     }
     
-    public boolean adicionarPessoa(String nome, String email, String documento) throws GerenciadorException {
+    public boolean adicionaUsuario(String nome, String email, String documento) throws GerenciadorException {
         Pessoa p = fachada.adicionarPessoa(nome, email, documento);
         if(p != null){
-            modelSaidaTexto.add(p);
+            modelPessoasSaidaTexto.add(p);
             return true;
         }
         return false;
     }
 
-    public List<String> getTodos() throws GerenciadorException {
+    public List<String> getUsuarioTodos() throws GerenciadorException {
         return toListString(fachada.buscarTodasPessoas());
     }
     
-    public void atualiza() throws GerenciadorException {
-        modelSaidaTexto = new ListaPessoasModel(fachada.buscarTodasPessoas());
+    public void atualizaUsuarios() throws GerenciadorException {
+        modelPessoasSaidaTexto = new ListaPessoasModel(fachada.buscarTodasPessoas());
     }
     
-    public String getEmail(String documento) throws GerenciadorException {
+    public void atualizaLeiloes() throws GerenciadorException {
+        modelLeiloesSaidaTexto = new ListaLeiloesModel(fachada.buscarTodosLeiloes());
+    }
+    
+    public String getUsuarioEmail(String documento) throws GerenciadorException {
         return fachada.buscarPessoaPorDocumento(documento).getEmail();
     }
     
-    public String getNome(String documento) throws GerenciadorException {
+    public String getUsuarioNome(String documento) throws GerenciadorException {
         return fachada.buscarPessoaPorDocumento(documento).getNome();
     }
     
-    public List<String> getTodosNomes() throws GerenciadorException {
+    public List<String> getUsuarioTodosNomes() throws GerenciadorException {
         List<Pessoa> pessoas = fachada.buscarTodasPessoas();
         List<String> retorno = new ArrayList<>();
         for (Pessoa p : pessoas){
             retorno.add(p.getNome());
         }
         return retorno;
+    }
+    
+    public String getLeilaoTitulo(String leilaoId) throws GerenciadorException{
+        return fachada.buscarLeilaoTitulo(leilaoId);
     }
 }
